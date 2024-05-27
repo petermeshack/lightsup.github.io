@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Control Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .button {
+            width: 200px;
+            height: 200px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .button.off {
+            background-color: #000; /* Black when off */
+        }
+        .button.on {
+            background-color: #007bff; /* Blue when on */
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>LightsUp</h1>
+    <h2>Smart Home Control Panel</h2>
+    <div class="container">
+        <button class="button" id="bedroomButton">Bedroom</button>
+        <button class="button" id="bathroomButton">Bathroom</button>
+        <button class="button" id="kitchenButton">Kitchen</button>
+        <button class="button" id="sittingRoomButton">Sitting Room</button>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyAvU6OlZIqosLGnWuuUWoDJrBayLc3PMXQ",
+          authDomain: "lightsup-3b4ee.firebaseapp.com",
+          projectId: "lightsup-3b4ee",
+          storageBucket: "lightsup-3b4ee.appspot.com",
+          messagingSenderId: "932377450728",
+          appId: "1:932377450728:web:464a6865bd5c454f3b915d",
+          measurementId: "G-Q7VJ745QHW"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Get a reference to the Firestore service
+        const db = firebase.firestore();
+
+        // Reference to the rooms document
+        const roomsRef = db.collection('Lightsup').doc('rooms');
+
+        // Button elements
+        const bedroomButton = document.getElementById('bedroomButton');
+        const bathroomButton = document.getElementById('bathroomButton');
+        const kitchenButton = document.getElementById('kitchenButton');
+        const sittingRoomButton = document.getElementById('sittingRoomButton');
+
+        // Add event listeners to buttons
+        bedroomButton.addEventListener('click', () => updateRoom('bedroom'));
+        bathroomButton.addEventListener('click', () => updateRoom('bathroom'));
+        kitchenButton.addEventListener('click', () => updateRoom('kitchen'));
+        sittingRoomButton.addEventListener('click', () => updateRoom('sittingroom')); // Corrected room name
+
+        // Function to update room status
+        function updateRoom(room) {
+            roomsRef.get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    const currentState = data[room];
+                    roomsRef.update({
+                        [room]: !currentState
+                    });
+                } else {
+                    console.log("No such document!");
+                }
+            }).catch(error => {
+                console.log("Error getting document:", error);
+            });
+        }
+
+        // Real-time listener for changes in the Firestore
+        roomsRef.onSnapshot(doc => {
+            const data = doc.data();
+            if (data) {
+                // Update button styles based on Firestore data
+                Object.keys(data).forEach(room => {
+                    const button = document.getElementById(room + 'Button');
+                    if (button) {
+                        if (data[room]) {
+                            button.classList.remove('off');
+                            button.classList.add('on');
+                        } else {
+                            button.classList.remove('on');
+                            button.classList.add('off');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
