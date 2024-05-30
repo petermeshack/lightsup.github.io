@@ -51,7 +51,7 @@
     <h2>Smart Home Control Panel</h2>
     <div class="container">
         <button class="button" id="bedroomButton">Bedroom</button>
-        <button class="button" id="bathroomButton">Bathroom</button>
+        <button class="button" id="securityButton">Security</button>
         <button class="button" id="kitchenButton">Kitchen</button>
         <button class="button" id="sittingRoomButton">Sitting Room</button>
     </div>
@@ -83,13 +83,13 @@
 
         // Button elements
         const bedroomButton = document.getElementById('bedroomButton');
-        const bathroomButton = document.getElementById('bathroomButton');
+        const securityButton = document.getElementById('securityButton');
         const kitchenButton = document.getElementById('kitchenButton');
         const sittingRoomButton = document.getElementById('sittingRoomButton');
 
         // Add event listeners to buttons
         bedroomButton.addEventListener('click', () => updateRoom('bedroom'));
-        bathroomButton.addEventListener('click', () => updateRoom('bathroom'));
+        securityButton.addEventListener('click', () => updateRoom('security'));
         kitchenButton.addEventListener('click', () => updateRoom('kitchen'));
         sittingRoomButton.addEventListener('click', () => updateRoom('sittingroom')); // Corrected room name
 
