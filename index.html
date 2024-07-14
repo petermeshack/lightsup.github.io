@@ -28,21 +28,15 @@
         .button {
             width: 200px;
             height: 200px;
-            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             padding: 10px;
             cursor: pointer;
+            background-color: #007bff; /* Blue when on */
         }
         .button.off {
             background-color: #000; /* Black when off */
-        }
-        .button.on {
-            background-color: #007bff; /* Blue when on */
-        }
-        .button:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
@@ -82,16 +76,17 @@
         const roomsRef = db.collection('Lightsup').doc('rooms');
 
         // Button elements
-        const bedroomButton = document.getElementById('bedroomButton');
-        const securityButton = document.getElementById('securityButton');
-        const kitchenButton = document.getElementById('kitchenButton');
-        const sittingRoomButton = document.getElementById('sittingRoomButton');
+        const buttons = {
+            bedroom: document.getElementById('bedroomButton'),
+            security: document.getElementById('securityButton'),
+            kitchen: document.getElementById('kitchenButton'),
+            sittingroom: document.getElementById('sittingRoomButton')
+        };
 
         // Add event listeners to buttons
-        bedroomButton.addEventListener('click', () => updateRoom('bedroom'));
-        securityButton.addEventListener('click', () => updateRoom('security'));
-        kitchenButton.addEventListener('click', () => updateRoom('kitchen'));
-        sittingRoomButton.addEventListener('click', () => updateRoom('sittingroom')); // Corrected room name
+        Object.keys(buttons).forEach(room => {
+            buttons[room].addEventListener('click', () => updateRoom(room));
+        });
 
         // Function to update room status
         function updateRoom(room) {
@@ -116,7 +111,7 @@
             if (data) {
                 // Update button styles based on Firestore data
                 Object.keys(data).forEach(room => {
-                    const button = document.getElementById(room + 'Button');
+                    const button = buttons[room];
                     if (button) {
                         if (data[room]) {
                             button.classList.remove('off');
